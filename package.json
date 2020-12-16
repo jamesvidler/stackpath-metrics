@@ -1,0 +1,24 @@
+{
+  "name": "stackpath-metrics-cli",
+  "version": "1.0.0",
+  "description": "Cli to output sites by how much bandwidth they use",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jamesvidler/stackpath-metrics"
+  },
+  "author": "James Vidler",
+  "license": "ISC",
+  "bin": {
+    "stackpath-metrics": "./cli.js"
+  },
+  "dependencies": {
+    "cli-color": "^1.4.0",
+    "deep-sort": "^1.0.4",
+    "request": "^2.88.0",
+    "yargs": "^13.3.0"
+  }
+}
