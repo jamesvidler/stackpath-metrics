@@ -97,6 +97,7 @@ var getMetrics = function(processMetrics) {
     
 }
 
+//GO!
 getMetrics(function(response) {
 
     var results = {
@@ -130,59 +131,5 @@ getMetrics(function(response) {
 
     console.log(results);
 })
-
-//GO!
-// var go = function(article) {
-//     fs.readFile(options.file, 'utf8', function(err, data) {
-//         if (err) throw err;
-        
-//         var html = marked(data);
-
-//         article.body = html;
-    
-//         createArticle(article, function(error, response, body) {
-//             if(error) console.error(error);
-//             if(response && response.statusCode) console.log(response.statusCode);
-//             console.log(body);
-//         });
-    
-        
-//     });
-// }
-
-
-// var buildAuthHeader = function() {
-//     return {
-//         'user': `${options.user}/token`,
-//         'pass': options.token,
-//         'sendImmediately': true
-//        };
-// }
-
-// var createArticle = function(article, cb) {
-    
-//     var data = {
-//         article: article
-//     };
-//     request({
-//         method: 'POST',
-//         uri: `https://${options.subdomain}.zendesk.com/api/v2/help_center/sections/${options.section_id}/articles.json`,
-//         body: data,
-//         json: true,
-//         auth: buildAuthHeader()
-//     }, function(error, response, body) {
-//         cb(error, response, body);
-//     });
-// }
-
-// go({ 
-//     title: options.title,
-//     body: '', //is set after markdown file is converted to html
-//     locale: 'en-us',
-//     user_segment_id: options.user_segment_id,
-//     permission_group_id: options.permission_group_id,
-//     draft: options.draft
-// });
-
 
 
