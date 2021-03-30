@@ -53,19 +53,25 @@ var getAuthToken = function(cb) {
     request({
         method: 'POST',
         uri: `https://gateway.stackpath.com/identity/v1/oauth2/token`,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
         body: {
             grant_type: 'client_credentials',
             client_id: options.client_id,
             client_secret: options.client_secret
         },
         json: true,
-    }, function(error, response, body) {
-        if(error) {
-            console.log(error(error));
+    }, function(errorObj, response, body) {
+        if(errorObj) {
+            console.log(error(errorObj));
             return;
         } 
         if(response && response.statusCode) {
             console.log(notice('Successfully received auth token from Stackpath...'))
+            console.log(body);
+            console.log(body.access_token)
             cb(body.access_token);
         }
     });
@@ -83,12 +89,17 @@ var getMetrics = function(processMetrics) {
             auth: {
                 bearer: access_token
             }
-        }, function(error, response, body) {
-            if(error) {
-                console.log(error(error));
+        }, function(errorObj, response, body) {
+            if(errorObj) {
+                console.error(error(errorObj));
                 return;
             } 
+            if(response.statusCode === 400) {
+                console.error("400 error");
+                return;
+            }
             if(response && response.statusCode) {
+                console.log(response.statusCode);
                 console.log(notice('Got results from Stackpath, formatting...'))
                 processMetrics(body);
             }
@@ -101,28 +112,30 @@ var getMetrics = function(processMetrics) {
 getMetrics(function(response) {
 
     var results = {
-        totalBandwidth: null,
+        totalBandwidthMB: null,
         totalSites: null,
-        sites: []
+        sites: [],
     }
+   
+    
 
     for(var i in response.data.matrix.results) {
         var thisResult = response.data.matrix.results[i];
         if(thisResult.metric.__name__ === 'transfer_used_total_mb') {
             var bandwidthForThisSite = (thisResult.values.length > 0 ? parseFloat(thisResult.values[0].value) : 0); //TODO: handle multiple value ouputs for a time range
             results.sites.push({
-                 bandwidth: bandwidthForThisSite,
+                 bandwidthMB: bandwidthForThisSite,
                  site_id: thisResult.metric.site_id,
                  url: `https://control.stackpath.com/stacks/${options.stack_id}/sites/${thisResult.metric.site_id}/overview`
                 });
-            results.totalBandwidth += bandwidthForThisSite;
+            results.totalBandwidthMB += bandwidthForThisSite;
             results.totalSites ++;
         }
     }
 
     results.sites = results.sites.sort(function(a,b) {
-        if(a.bandwidth < b.bandwidth) return 1;
-        if(a.bandwidth > b.bandwidth) return -1;
+        if(a.bandwidthMB < b.bandwidthMB) return 1;
+        if(a.bandwidthMB > b.bandwidthMB) return -1;
         return 0;
     })
 
